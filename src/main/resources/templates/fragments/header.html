@@ -1,0 +1,32 @@
+<header class="bg-blue-500 flex justify-between items-center text-white px-4" layout:fragment="header">
+    <!-- Brand Logo -->
+    <a th:href="@{/}" class="logo">
+        <span class="text-2xl font-bold">ViVu Store</span>
+    </a>
+
+    <!-- Navigation bar - Navbar -->
+    <nav class="navbar flex-grow">
+        <ul class="navbar-menu flex">
+            <li class="nav-item">
+                <a th:href="@{/}" class="nav-link inline-block p-4 hover:bg-blue-700">Home</a>
+            </li>
+            <li class="nav-item">
+                <a th:href="@{/categories}" class="nav-link inline-block p-4 hover:bg-blue-700">Categories</a>
+            </li>
+            <li class="nav-item">
+                <a th:href="@{/products}" class="nav-link inline-block p-4 hover:bg-blue-700">Products</a>
+            </li>
+            <li class="nav-item">
+                <a th:href="@{/about}" class="nav-link inline-block p-4 hover:bg-blue-700">About</a>
+            </li>
+            <li class="nav-item">
+                <a th:href="@{/contact}" class="nav-link inline-block p-4 hover:bg-blue-700">Contact</a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="profile-menu">
+        <a th:href="@{/login}" class="nav-link inline-block p-4 hover:bg-blue-700">Login</a>
+        <a th:href="@{/register}" class="nav-link inline-block p-4 hover:bg-blue-700">Register</a>
+    </div>
+</header>

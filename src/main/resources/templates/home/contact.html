@@ -1,14 +1,20 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layouts/layout}">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <meta name="description" content="Contact page of ViVu Store">
+    <meta name="keywords" content="contact, contact us, contact information">
+    <title layout:fragment="title">Contact - ViVu Store</title>
 </head>
 
 <body>
-    <h1>Contact</h1>
+    <section layout:fragment="content">
+        <div class="section-header text-center">
+            <h1 class="text-2xl">Contact</h1>
+            <p class="">Contact us for any questions or inquiries</p>
+        </div>
+    </section>
 </body>
 
 </html>
