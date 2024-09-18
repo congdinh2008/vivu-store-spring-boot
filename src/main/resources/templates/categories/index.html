@@ -20,7 +20,8 @@
                     <div class="form-group">
                         <label for="keyword" class="block text-sm font-medium text-gray-700 mb-2">Keyword:</label>
                         <input type="text" id="keyword" name="keyword" autocomplete="keyword"
-                            class="p-2 border border-slate-300 w-full rounded-md" placeholder="Enter keyword...">
+                            class="p-2 border border-slate-300 w-full rounded-md" placeholder="Enter keyword..."
+                            th:value="${keyword}">
                     </div>
                 </div>
                 <div class="card-footer p-3 flex justify-between items-center">
@@ -37,12 +38,21 @@
             <div class="card-header p-3">
                 <h2 class="text-2xl">Category List</h2>
             </div>
-            <div class="card-body p-3 border-y border-slate-300">
+            <div class="card-body p-3 border-y border-slate-300" th:if="${totalPages > 0}">
                 <table class="table-auto w-full border border-collapse">
                     <thead>
                         <tr class="*:text-left *:border *:border-slate-300 *:p-2">
                             <th>Id</th>
-                            <th>Name</th>
+                            <th>
+                                <a
+                                    th:href="@{'/categories?&keyword=' + ${keyword} + '&sort=name&order=' + (${order == 'asc'} ? 'desc' : 'asc') + '&size=' + ${pageSize}}">
+                                    <span>Name</span>
+                                    <i th:if="${sort == 'name'}"
+                                        th:class="${order == 'asc'} ? 'fa-solid fa-arrow-up' : 'fa-solid fa-arrow-down'"
+                                        class="text-blue-500">
+                                    </i>
+                                </a>
+                            </th>
                             <th>Description</th>
                             <th>Actions</th>
                         </tr>
@@ -64,8 +74,56 @@
                     </tbody>
                 </table>
             </div>
-            <div class="card-footer p-3">
-                Pagination
+            <div class="card-footer p-3" th:if="${totalPages == 0}">
+                <p class="text-center text-gray-700">No categories found</p>
+            </div>
+            <div class="card-footer pagination p-3 flex justify-between items-center" th:if="${totalPages > 0}">
+                <!-- Show select page size -->
+                <div class="flex justify-between items-center">
+                    <div>
+                        <label for="pageSize" class="block text-sm font-medium text-gray-700 mb-2">Page Size:</label>
+                        <select id="pageSize" name="pageSize" class="p-2 border border-slate-300 rounded-md"
+                            onchange="window.location.href = '/categories?keyword=' + document.getElementById('keyword').value + '&page=0&size=' + this.value">
+                            <option th:each="size : ${pageSizes}" th:value="${size}" th:text="${size}"
+                                th:selected="${size == pageSize}"></option>
+                        </select>
+                    </div>
+                </div>
+                <ul class="pagination-step flex justify-center items-center gap-2">
+                    <!-- Previous Page -->
+                    <li>
+                        <a class="p-3"
+                            th:href="@{/categories(keyword=${keyword}, page=${currentPage - 1}, size=${pageSize})}"
+                            th:classappend="${currentPage == 0} ? 'pointer-events-none text-slate-300' : ''">
+                            <i class="fa-solid fa-angle-left"></i>
+                        </a>
+                    </li>
+
+                    <!-- Page Numbers -->
+                    <li th:each="pageNum : ${#numbers.sequence(0, totalPages - 1 < 0 ? 0 : totalPages - 1)}">
+                        <a class="p-3"
+                            th:href="@{/categories(keyword=${keyword}, sort=${sort}, order=${order}, page=${pageNum}, size=${pageSize})}"
+                            th:classappend="${pageNum == currentPage} ? 'inline-block text-center bg-blue-700 rounded-full w-12 h-12 text-white' : ''">
+                            <span th:text="${pageNum + 1}"></span>
+                        </a>
+                    </li>
+
+                    <!-- Next Page - Disabled if currentPage is the last page -->
+                    <li>
+                        <a class="p-3"
+                            th:href="@{/categories(keyword=${keyword}, sort=${sort}, order=${order}, page=${currentPage + 1}, size=${pageSize})}"
+                            th:classappend="${currentPage == totalPages - 1} ? 'pointer-events-none text-slate-300' : ''">
+                            <i class="fa-solid fa-angle-right"></i>
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Show item 0-100 of 1000 -->
+                <div class="flex justify-center items-center gap-2">
+                    <span class="text-sm text-gray-700"
+                        th:text="|Show ${currentPage * pageSize + 1}-${(currentPage + 1) * pageSize} of ${totalElements}|">
+                    </span>
+                </div>
             </div>
         </div>
     </section>

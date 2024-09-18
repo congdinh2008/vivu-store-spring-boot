@@ -2,6 +2,8 @@ package com.congdinh.vivustore.controllers;
 
 import java.util.UUID;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.congdinh.vivustore.dtos.category.CategoryDTO;
@@ -27,9 +30,23 @@ public class CategoryController {
     }
 
     @GetMapping
-    public String index(Model model) {
-        var categories = categoryService.getAll();
+    public String index(@RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "name") String sort,
+            @RequestParam(defaultValue = "asc") String order,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "2") int size, Model model) {
+        Sort.Direction direction = Sort.Direction.fromString(order);
+        var pageable = PageRequest.of(page, size, Sort.by(direction, sort));
+        var categories = categoryService.search(keyword, pageable);
         model.addAttribute("categories", categories);
+        model.addAttribute("keyword", keyword == null ? "" : keyword);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("sort", sort == null ? "name" : sort);
+        model.addAttribute("order", order == null ? "asc" : order);
+        model.addAttribute("pageSize", size);
+        model.addAttribute("totalPages", categories.getTotalPages());
+        model.addAttribute("totalElements", categories.getTotalElements());
+        model.addAttribute("pageSizes", new int[] { 2, 5, 10, 20 });
         return "categories/index";
     }
 

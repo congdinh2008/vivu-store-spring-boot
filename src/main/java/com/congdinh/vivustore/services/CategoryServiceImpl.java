@@ -3,6 +3,9 @@ package com.congdinh.vivustore.services;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.congdinh.vivustore.dtos.category.CategoryDTO;
@@ -79,5 +82,28 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         categoryRepository.delete(existingCategory);
+    }
+
+    @Override
+    public Page<CategoryDTO> search(String name, Pageable pageable) {
+        Specification<Category> spec = (root, query, criteriaBuilder) -> {
+            if (name == null) {
+                return null;
+            }
+
+            return criteriaBuilder.or(
+                    criteriaBuilder.like(root.get("name"), "%" + name + "%"),
+                    criteriaBuilder.like(root.get("description"), "%" + name + "%"));
+        };
+
+        var categories = categoryRepository.findAll(spec, pageable);
+
+        return categories.map(category -> {
+            var categoryDTO = new CategoryDTO();
+            categoryDTO.setId(category.getId());
+            categoryDTO.setName(category.getName());
+            categoryDTO.setDescription(category.getDescription());
+            return categoryDTO;
+        });
     }
 }
