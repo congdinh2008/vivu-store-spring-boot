@@ -1,5 +1,6 @@
 package com.congdinh.vivustore.entities;
 
+import java.util.List;
 import java.util.UUID;
 
 import jakarta.persistence.*;
@@ -21,4 +22,7 @@ public class Category {
 
     @Column(name = "description", length = 500)
     private String description;
+
+    @OneToMany(mappedBy = "category")
+    private List<Product> products;
 }
