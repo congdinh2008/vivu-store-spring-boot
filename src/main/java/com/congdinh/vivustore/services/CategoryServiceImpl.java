@@ -96,8 +96,16 @@ public class CategoryServiceImpl implements CategoryService {
                     criteriaBuilder.like(root.get("description"), "%" + name + "%"));
         };
 
+        // Call finall and pass Specification<Category>, Pageable
+        // SELECT * FROM Category WHERE name LIKE %keyword% OR description LIKE %keyword% OFFSET 10 ROWS FETCH NEXT 10
+        // content: 10 record of category
+        // totalPage: 2
+        // totalItems: 15
         var categories = categoryRepository.findAll(spec, pageable);
 
+        // content: 10 record of categoryDTO
+        // totalPage: 2
+        // totalItems: 15
         return categories.map(category -> {
             var categoryDTO = new CategoryDTO();
             categoryDTO.setId(category.getId());

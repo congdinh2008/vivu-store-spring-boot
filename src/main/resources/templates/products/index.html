@@ -15,14 +15,17 @@
                 <h2 class="text-2xl">Product Management</h2>
                 <p th:text="${message}" class="text-green-500"></p>
             </div>
+            <!-- Form Search Product by Keyword and Category -->
             <form th:action=@{/products} method="get">
                 <div class="card-body p-3 border-y border-slate-300 flex justify-between gap-2">
+                    <!-- Keyword -->
                     <div class="form-group w-1/2">
                         <label for="keyword" class="block text-sm font-medium text-gray-700 mb-2">Keyword:</label>
                         <input type="text" id="keyword" name="keyword" autocomplete="keyword"
                             class="p-2 border border-slate-300 w-full rounded-md" placeholder="Enter keyword..."
                             th:value="${keyword}">
                     </div>
+                    <!-- Category -->
                     <div class="form-group w-1/2">
                         <label for="category" class="block text-sm font-medium text-gray-700 mb-2">Category:</label>
                         <select id="category" name="category" class="p-2 h-[42px] border border-slate-300 w-full rounded-md">

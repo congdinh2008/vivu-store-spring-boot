@@ -5,7 +5,6 @@ import java.io.IOException;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,13 +12,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.congdinh.vivustore.dtos.category.CategoryDTO;
 import com.congdinh.vivustore.dtos.product.ProductDTO;
 import com.congdinh.vivustore.services.CategoryService;
 import com.congdinh.vivustore.services.ProductService;
@@ -59,6 +56,7 @@ public class ProductController {
         model.addAttribute("totalElements", products.getTotalElements());
         model.addAttribute("pageSizes", new int[] { 2, 5, 10, 20 });
 
+        // Get all category and pass to view to show select option in search form
         var categories = categoryService.getAll();
         model.addAttribute("categories", categories);
         model.addAttribute("selectedCategory", category);
@@ -69,21 +67,26 @@ public class ProductController {
     public String create(Model model) {
         var productDTO = new ProductDTO();
         model.addAttribute("productDTO", productDTO);
+
+        // Get all categories, user can choose category when creating
         var categories = categoryService.getAll();
         model.addAttribute("categories", categories);
         return "products/create";
     }
 
     @PostMapping("create")
-    public String createPost(@ModelAttribute @Valid ProductDTO productDTO,
+    public String createPost(
+            @ModelAttribute @Valid ProductDTO productDTO,
             @RequestParam("thumbnailFile") MultipartFile thumbnailFile,
-            BindingResult bindingResult, Model model) {
+            BindingResult bindingResult,
+            Model model) {
         if (bindingResult.hasErrors()) {
             var categories = categoryService.getAll();
             model.addAttribute("categories", categories);
             return "products/create";
         }
 
+        // File processing - Store file to server
         if (!thumbnailFile.isEmpty()) {
             try {
                 byte[] bytes = thumbnailFile.getBytes();

@@ -139,7 +139,7 @@ public class ProductServiceImpl implements ProductService {
                     criteriaBuilder.like(root.get("name"), "%" + name + "%"),
                     criteriaBuilder.like(root.get("description"), "%" + name + "%"));
 
-            if (categoryName != null) {
+            if (categoryName != null && categoryName.trim().length() != 0){
                 predicate = criteriaBuilder.and(predicate,
                         criteriaBuilder.equal(root.get("category").get("name"), categoryName));
             }
@@ -159,11 +159,12 @@ public class ProductServiceImpl implements ProductService {
             productDTO.setStock(product.getStock());
             productDTO.setCategoryId(product.getCategory().getId());
 
-            // Set category
+            // Transform Category => CategoryDTO
             var categoryDTO = new CategoryDTO();
             categoryDTO.setId(product.getCategory().getId());
             categoryDTO.setName(product.getCategory().getName());
             productDTO.setCategory(categoryDTO);
+            
             return productDTO;
         });
     }
