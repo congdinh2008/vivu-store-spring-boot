@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <header class="bg-blue-500 flex justify-between items-center text-white px-4" layout:fragment="header">
     <!-- Brand Logo -->
     <a th:href="@{/}" class="logo">
@@ -10,10 +13,10 @@
             <li class="nav-item">
                 <a th:href="@{/}" class="nav-link inline-block p-4 hover:bg-blue-700">Home</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" sec:authorize="hasRole('ADMIN')">
                 <a th:href="@{/categories}" class="nav-link inline-block p-4 hover:bg-blue-700">Categories</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" sec:authorize="hasRole('ADMIN')">
                 <a th:href="@{/products}" class="nav-link inline-block p-4 hover:bg-blue-700">Products</a>
             </li>
             <li class="nav-item">
@@ -26,7 +29,15 @@
     </nav>
 
     <div class="profile-menu">
-        <a th:href="@{/login}" class="nav-link inline-block p-4 hover:bg-blue-700">Login</a>
-        <a th:href="@{/register}" class="nav-link inline-block p-4 hover:bg-blue-700">Register</a>
+        <div sec:authorize="isAuthenticated()">
+            <span>Welcome, <span sec:authentication="name"></span>!</span>
+            <a th:href="@{/logout}" class="nav-link inline-block p-4 hover:bg-blue-700">Logout</a>
+        </div>
+        <div sec:authorize="isAnonymous()">
+            <a th:href="@{/auth/login}" class="nav-link inline-block p-4 hover:bg-blue-700">Login</a>
+            <a th:href="@{/auth/register}" class="nav-link inline-block p-4 hover:bg-blue-700">Register</a>
+        </div>
     </div>
 </header>
+
+</html>

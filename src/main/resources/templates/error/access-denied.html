@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layouts/authlayout}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title layout:fragment="title">Access Denied - ViVu Store</title>
+</head>
+
+<body>
+    <section layout:fragment="content" class="flex flex-col items-center justify-center h-screen">
+        <h1>Access Denied</h1>
+        <p>You do not have permission to access this page.</p>
+        <a th:href="@{/}" class="text-blue-500 hover:text-blue-700">Back to Home</a>
+    </section>
+</body>
+
+</html>
