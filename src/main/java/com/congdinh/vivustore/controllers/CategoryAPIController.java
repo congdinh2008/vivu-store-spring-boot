@@ -14,9 +14,11 @@ import com.congdinh.vivustore.services.CategoryService;
 
 import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Controller
 @RequestMapping("/api/categories")
+@Tag(name = "Category API")
 public class CategoryAPIController {
     private final CategoryService categoryService;
 
@@ -35,15 +37,15 @@ public class CategoryAPIController {
 
         CategoryDTO category = categoryService.save(categoryDTO);
         if (category == null) {
-            return ResponseEntity.ofNullable(null);
+            return ResponseEntity.status(500).body("Create category failed");
         }
         return ResponseEntity.ok(category);
     }
 
     // API Method to handle the retrieval of categories via GET request
     @GetMapping
-    @Operation(summary = "Get all categories")
-    public ResponseEntity<?> getAll(
+    @Operation(summary = "Search categories")
+    public ResponseEntity<?> search(
             @RequestParam(required = false) String keyword,
             @RequestParam(defaultValue = "name") String sort,
             @RequestParam(defaultValue = "asc") String order,

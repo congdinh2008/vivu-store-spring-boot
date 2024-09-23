@@ -9,7 +9,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.congdinh.vivustore.dtos.category.CategoryDTO;
+import com.congdinh.vivustore.dtos.product.ProductCreateDTO;
 import com.congdinh.vivustore.dtos.product.ProductDTO;
+import com.congdinh.vivustore.dtos.product.ProductUpdateDTO;
 import com.congdinh.vivustore.entities.Product;
 import com.congdinh.vivustore.repositories.CategoryRepository;
 import com.congdinh.vivustore.repositories.ProductRepository;
@@ -79,7 +81,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDTO save(ProductDTO productDTO) {
-        if(productDTO == null){
+        if (productDTO == null) {
             throw new IllegalArgumentException("Product is required");
         }
 
@@ -91,9 +93,104 @@ public class ProductServiceImpl implements ProductService {
         product.setPrice(productDTO.getPrice());
         product.setStock(productDTO.getStock());
 
-        if(productDTO.getCategoryId() != null){
+        if (productDTO.getCategoryId() != null) {
             var category = categoryRepository.findById(productDTO.getCategoryId()).orElse(null);
-            if(category == null){
+            if (category == null) {
+                throw new IllegalArgumentException("Category not found");
+            }
+            product.setCategory(category);
+        }
+
+        var savedProduct = productRepository.save(product);
+
+        if (savedProduct == null) {
+            throw new RuntimeException("Save product failed");
+        }
+
+        var savedProductDTO = new ProductDTO();
+        savedProductDTO.setId(savedProduct.getId());
+        savedProductDTO.setName(savedProduct.getName());
+        savedProductDTO.setDescription(savedProduct.getDescription());
+        savedProductDTO.setThumbnail(savedProduct.getThumbnail());
+        savedProductDTO.setPrice(savedProduct.getPrice());
+        savedProductDTO.setStock(savedProduct.getStock());
+        savedProductDTO.setCategoryId(savedProduct.getCategory().getId());
+
+        return savedProductDTO;
+    }
+
+    /**
+     * Saves a new product based on the provided ProductCreateDTO.
+     *
+     * @param productCreateDTO the DTO containing the details of the product to be
+     *                         created
+     * @return the saved ProductDTO containing the details of the newly created
+     *         product
+     */
+    @Override
+    public ProductDTO save(ProductCreateDTO productCreateDTO) {
+        if (productCreateDTO == null) {
+            throw new IllegalArgumentException("Product is required");
+        }
+
+        var product = new Product();
+        product.setName(productCreateDTO.getName());
+        product.setDescription(productCreateDTO.getDescription());
+        product.setThumbnail(productCreateDTO.getThumbnail());
+        product.setPrice(productCreateDTO.getPrice());
+        product.setStock(productCreateDTO.getStock());
+
+        if (productCreateDTO.getCategoryId() != null) {
+            var category = categoryRepository.findById(productCreateDTO.getCategoryId()).orElse(null);
+            if (category == null) {
+                throw new IllegalArgumentException("Category not found");
+            }
+            product.setCategory(category);
+        }
+
+        var savedProduct = productRepository.save(product);
+
+        if (savedProduct == null) {
+            throw new RuntimeException("Save product failed");
+        }
+
+        var savedProductDTO = new ProductDTO();
+        savedProductDTO.setId(savedProduct.getId());
+        savedProductDTO.setName(savedProduct.getName());
+        savedProductDTO.setDescription(savedProduct.getDescription());
+        savedProductDTO.setThumbnail(savedProduct.getThumbnail());
+        savedProductDTO.setPrice(savedProduct.getPrice());
+        savedProductDTO.setStock(savedProduct.getStock());
+        savedProductDTO.setCategoryId(savedProduct.getCategory().getId());
+
+        return savedProductDTO;
+    }
+
+    /**
+     * Update a product based on the provided ProductUpdateDTO.
+     *
+     * @param productUpdateDTO the DTO containing the details of the product to be
+     *                         created
+     * @return the saved ProductDTO containing the details of the newly created
+     *         product
+     */
+    @Override
+    public ProductDTO save(ProductUpdateDTO productUpdateDTO) {
+        if (productUpdateDTO == null) {
+            throw new IllegalArgumentException("Product is required");
+        }
+
+        var product = new Product();
+        product.setId(productUpdateDTO.getId());
+        product.setName(productUpdateDTO.getName());
+        product.setDescription(productUpdateDTO.getDescription());
+        product.setThumbnail(productUpdateDTO.getThumbnail());
+        product.setPrice(productUpdateDTO.getPrice());
+        product.setStock(productUpdateDTO.getStock());
+
+        if (productUpdateDTO.getCategoryId() != null) {
+            var category = categoryRepository.findById(productUpdateDTO.getCategoryId()).orElse(null);
+            if (category == null) {
                 throw new IllegalArgumentException("Category not found");
             }
             product.setCategory(category);
@@ -139,7 +236,7 @@ public class ProductServiceImpl implements ProductService {
                     criteriaBuilder.like(root.get("name"), "%" + name + "%"),
                     criteriaBuilder.like(root.get("description"), "%" + name + "%"));
 
-            if (categoryName != null && categoryName.trim().length() != 0){
+            if (categoryName != null && categoryName.trim().length() != 0) {
                 predicate = criteriaBuilder.and(predicate,
                         criteriaBuilder.equal(root.get("category").get("name"), categoryName));
             }
@@ -164,7 +261,7 @@ public class ProductServiceImpl implements ProductService {
             categoryDTO.setId(product.getCategory().getId());
             categoryDTO.setName(product.getCategory().getName());
             productDTO.setCategory(categoryDTO);
-            
+
             return productDTO;
         });
     }

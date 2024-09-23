@@ -3,9 +3,6 @@ package com.congdinh.vivustore.dtos.product;
 import java.util.UUID;
 
 import org.hibernate.validator.constraints.Length;
-import org.springframework.web.multipart.MultipartFile;
-
-import com.congdinh.vivustore.dtos.category.CategoryDTO;
 
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -14,9 +11,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductDTO {
-    private UUID id;
-
+public class ProductCreateDTO {
     @NotBlank(message = "Name is required")
     @Length(min = 3, max = 255, message = "Name must be between 3 and 255 characters")
     private String name;
@@ -26,8 +21,6 @@ public class ProductDTO {
 
     @Length(max = 255, message = "Thumbnail must be less than 255 characters")
     private String thumbnail;
-
-    private MultipartFile thumbnailFile;
 
     @NotNull(message = "Price is required")
     @Positive(message = "Price must be greater than 0")
@@ -39,8 +32,4 @@ public class ProductDTO {
 
     @NotNull(message = "Category is required")
     private UUID categoryId;
-
-    private CategoryDTO category;
 }
-
-
